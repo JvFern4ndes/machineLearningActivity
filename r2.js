@@ -1,17 +1,44 @@
+// Função para buscar dados históricos do Bitcoin
+async function getBitcoinHistoricalData() {
+	try {
+		const response = await fetch(
+			"https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=50&interval=daily",
+		);
+		const data = await response.json();
+
+		// Converte os dados em formato [x, y], onde x é o índice do dia (0 a 49) e y é o preço
+		const priceArray = data.prices.map(([timestamp, price], index) => [
+			index,
+			price,
+		]);
+
+		return priceArray;
+	} catch (error) {
+		console.error("Erro ao buscar dados:", error);
+		return [];
+	}
+}
+
 // Função principal para calcular regressão linear e R²
 function calculateLinearRegression(data) {
 	const n = data.length;
 
 	// Calculando as somas necessárias
-	let sumX = 0,
-		sumY = 0,
-		sumXY = 0,
-		sumX2 = 0,
-		sumY2 = 0;
+	let sumX;
+	let sumY;
+	let sumXY;
+	let sumX2;
+	let sumY2;
+
+	sumX = 0;
+	sumY = 0;
+	sumXY = 0;
+	sumX2 = 0;
+	sumY2 = 0;
 
 	for (let i = 0; i < n; i++) {
-		const x = data[i][0];
-		const y = data[i][1];
+		const x = data[i][0]; // Índice do dia
+		const y = data[i][1]; // Preço
 
 		sumX += x;
 		sumY += y;
@@ -28,8 +55,12 @@ function calculateLinearRegression(data) {
 	const yMean = sumY / n;
 
 	// Soma dos quadrados da regressão (SSR) e total (SST)
-	let ssr = 0,
-		sst = 0;
+	let ssr;
+	let sst;
+
+	ssr = 0;
+	sst = 0;
+
 	for (let i = 0; i < n; i++) {
 		const x = data[i][0];
 		const y = data[i][1];
@@ -49,27 +80,35 @@ function calculateLinearRegression(data) {
 	};
 }
 
-// Exemplo de uso com dados fictícios de Bitcoin
-const bitcoinData = [
-	[1, 30000], // [dia, preço]
-	[2, 31000],
-	[3, 30500],
-	[4, 32000],
-	[5, 31500],
-];
-
-// Testando a função
-const result = calculateLinearRegression(bitcoinData);
-console.log("Equação da reta:", result.equation);
-console.log("Inclinação (m):", result.slope);
-console.log("Intercepto (b):", result.intercept);
-console.log("R²:", result.r2);
-
-// Função para fazer previsões usando o modelo
+// Função para fazer previsões
 function predictPrice(x, model) {
 	return model.slope * x + model.intercept;
 }
 
-// Exemplo de previsão
-const predictedPrice = predictPrice(6, result);
-console.log("Preço previsto para dia 6:", predictedPrice);
+// Função principal que integra tudo
+async function analyzeBitcoinTrend() {
+	// Busca os dados
+	const bitcoinData = await getBitcoinHistoricalData();
+
+	if (bitcoinData.length === 0) {
+		console.log("Nenhum dado disponível para análise.");
+		return;
+	}
+
+	// Calcula a regressão
+	const result = calculateLinearRegression(bitcoinData);
+
+	// Exibe os resultados
+	console.log("Equação da reta:", result.equation);
+	console.log("Inclinação (m):", result.slope);
+	console.log("Intercepto (b):", result.intercept);
+	console.log("R²:", result.r2);
+
+	// Faz uma previsão para o dia 51 (próximo dia após os 50 dias)
+	const nextDay = 50;
+	const predictedPrice = predictPrice(nextDay, result);
+	console.log(`Preço previsto para o dia ${nextDay + 1}:`, predictedPrice);
+}
+
+// Executa a análise
+analyzeBitcoinTrend();
