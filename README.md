@@ -1,5 +1,12 @@
 # machineLearningActivity
 
+## Integrantes do grupo:  
+
+Geovanna Cypriano  
+João Victor Fernandes Ventura  
+Leila Pereira  
+Matheus Meneses  
+
 ## Análise de Tendência de Preços do Bitcoin com Regressão Linear
 
 ### Introdução  
