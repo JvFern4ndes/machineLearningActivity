@@ -1,7 +1,9 @@
 # machineLearningActivity
 
 Análise de Tendência de Preços do Bitcoin com Regressão Linear
-Introdução
+</br>
+## Introdução
+</br>
 Este trabalho apresenta o desenvolvimento de um programa em JavaScript que realiza a análise de dados históricos de preços do Bitcoin utilizando regressão linear. O objetivo foi obter uma equação da reta que represente a tendência dos preços ao longo de 50 dias, calcular o coeficiente de determinação (R²) para avaliar o ajuste do modelo e visualizar os resultados em um gráfico interativo. O código integra a obtenção de dados reais via API, cálculos matemáticos e visualização gráfica, utilizando ferramentas modernas como o Chart.js.
 Estrutura do Código
 O programa foi dividido em funções específicas, cada uma com uma responsabilidade bem definida:
